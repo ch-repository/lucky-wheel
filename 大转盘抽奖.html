@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>大转盘抽奖</title>
+  </head>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .outher,
+    .wapper {
+      position: relative;
+      width: 300px;
+      height: 300px;
+      border-radius: 50%;
+      overflow: hidden;
+    }
+
+    .wapper {
+      transform: rotate(22.25deg);
+    }
+
+    .left,
+    .right {
+      position: absolute;
+      width: 50%;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    .left {
+      left: 0;
+    }
+
+    .right {
+      right: 0;
+    }
+
+    .left div,
+    .right div {
+      position: absolute;
+      width: 150px;
+      height: 100%;
+    }
+
+    .left div {
+      transform-origin: right center;
+    }
+
+    .right div {
+      transform-origin: left center;
+    }
+
+    .left div.one {
+      background-color: #77DDFF;
+    }
+
+    .left div.two {
+      background-color: #00DDAA;
+      transform: rotate(-45deg);
+    }
+
+    .left div.three {
+      background-color: #FFFF33;
+      transform: rotate(-90deg);
+    }
+
+    .left div.four {
+      background-color: #D28EFF;
+      transform: rotate(-135deg);
+    }
+
+    .right div.one {
+      background-color: #FFDD55;
+    }
+
+    .right div.two {
+      background-color: #FF88C2;
+      transform: rotate(45deg);
+    }
+
+    .right div.three {
+      background-color: #99DD00;
+      transform: rotate(90deg);
+    }
+
+    .right div.four {
+      background-color: #DDDDDD;
+      transform: rotate(135deg);
+    }
+
+    .left .text {
+      position: absolute;
+      left: 53%;
+      top: 30px;
+      transform: rotate(-21.3deg);
+      user-select: none;
+    }
+
+    .right .text {
+      position: absolute;
+      left: 12%;
+      top: 30px;
+      transform: rotate(21.3deg);
+      user-select: none;
+    }
+
+    .circle {
+      width: 80px;
+      height: 80px;
+      background-color: rgb(236, 197, 19);
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 20px;
+      color: #fff;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .circle::after {
+      content: "";
+      position: absolute;
+      top: -70px;
+      border: 40px solid rgb(236, 197, 19);
+      border-left-width: 10px;
+      border-right-width: 10px;
+      border-left-color: transparent;
+      border-right-color: transparent;
+      border-top-color: transparent;
+    }
+  </style>
+
+  <body>
+    <div class="outher">
+      <div class="wapper">
+        <div class="left">
+          <div class="one">
+            <span class="text">1号大奖</span>
+          </div>
+          <div class="two">
+            <span class="text">2号大奖</span>
+          </div>
+          <div class="three">
+            <span class="text">3号大奖</span>
+          </div>
+          <div class="four">
+            <span class="text">4号大奖</span>
+          </div>
+        </div>
+
+        <div class="right">
+          <div class="one">
+            <span class="text">5号大奖</span>
+          </div>
+          <div class="two">
+            <span class="text">6号大奖</span>
+          </div>
+          <div class="three">
+            <span class="text">7号大奖</span>
+          </div>
+          <div class="four">
+            <span class="text">8号大奖</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="circle">抽奖</div>
+    </div>
+
+    <script>
+      let wapper = document.querySelector(".wapper");
+      let textAll = document.querySelectorAll(".text");
+
+      let texts = [
+        "1号大奖",
+        "2号大奖",
+        "3号大奖",
+        "4号大奖",
+        "5号大奖",
+        "6号大奖",
+        "7号大奖",
+        "未中奖",
+      ];
+
+      let weight = [1, 5, 10, 15, 22, 30, 40, 100];
+
+      let timer = null;
+      let isFlag = true;
+
+      for (let i = 0; i < texts.length; i++) {
+        textAll[i].innerHTML = texts[i];
+      }
+
+      function run(deg, text) {
+        isFlag = false;
+        let begin = 0;
+        let basic = 1800;
+        timer = setInterval(() => {
+          if (begin >= basic + deg) {
+            isFlag = true;
+            clearInterval(timer);
+          }
+          wapper.style.transform = `rotate(${begin}deg)`;
+          text.innerHTML = text;
+          begin += Math.ceil((basic + deg - begin) * 0.06);
+        }, 50);
+      }
+
+      document.querySelector(".circle").onclick = function () {
+        if (!isFlag) return;
+        let random = parseInt(Math.random() * 100);
+
+        let randomWeight = weight.concat(random);
+        let sortWeight = randomWeight.sort((a, b) => a - b);
+
+        let index = randomWeight.indexOf(random);
+
+        switch (index) {
+          case 0:
+            run(22.5, texts[0]);
+            break;
+          case 1:
+            run(66.5, texts[1]);
+            break;
+          case 2:
+            run(112.5, texts[2]);
+            break;
+          case 3:
+            run(157.5, texts[3]);
+            break;
+          case 4:
+            run(338.5, texts[4]);
+            break;
+          case 5:
+            run(294.5, texts[5]);
+            break;
+          case 6:
+            run(247.5, texts[6]);
+            break;
+          case 7:
+            run(201.5, texts[7]);
+            break;
+        }
+      };
+    </script>
+  </body>
+</html>
